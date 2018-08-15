@@ -1,100 +1,69 @@
-import React from 'react'
-import { Route } from 'react-router-dom'
-import { Link } from "react-router-dom";
-import * as BooksAPI from './BooksAPI'
-import BookList from './BookList'
-import SearchBook from './SearchBook'
-import './App.css'
+import React from 'react';
+import * as BooksAPI from './BooksAPI';
+import './App.css';
+import ShelfList from './ShelfList';
+import SearchBook from './SearchBook';
+import { Route, Link } from 'react-router-dom';
 
 class BooksApp extends React.Component {
+
   state = {
-    books: [],
-    searchedBooks: [],
-    searchQuery: ''
+    books: []
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     BooksAPI.getAll()
-      .then((books) => {
-        this.setState({ books: books })
-      });
-  };
+      .then(books => {
+        this.setState({ books });
+      })
+      .catch(err => console.error('Error occurred fetching contacts ', err));
+  }
 
-  onMoveBook = (event, book) => {
-    const target = event.target.value;
-    
-    BooksAPI.update(book, target).then(
-      result => {
-        BooksAPI.getAll().then(
-          books => {
-            this.setState({ books: books })
-
-            if (this.state.searchQuery.length !== 0) {
-              this.onMoveBook(this.state.searchQuery)
-            }
+  changeShelf = (book, shelf) => {
+    BooksAPI.update(book, shelf)
+      .then(this.setState(oldState => {
+        let found = false;
+        const newState = oldState.books.map(b => {
+          if (b.id === book.id) {
+            b.shelf = shelf;
+            found = true;
           }
-        )
-      }
-    )
-  }
-
-  onBookSearch = (query) => {
-    this.setState({ searchQuery: query })
-    let allBooks = this.state.books;
-
-    if (query.length === 0) {
-      this.setState({ searchQuery: query })
-      return;
-    }
-
-    BooksAPI.search(query, 5).then(
-      books => {
-        // This combines the searched books with the books you already have
-        if (books && books instanceof Array && (books.length !== 0)) {
-          let searched_books = books.map((book) => {
-            let update_book = allBooks.filter((b) => {
-              return book.id === b.id
-            });
-
-            if (update_book[0] === undefined) {
-              book.shelf = 'none';
-            }
-
-            return update_book[0] ? update_book[0] : book
-          });
-          this.setState({ searchedBooks: searched_books })
-        } else {
-          this.setState({  searchedBooks: [] })
+          return b;
+        });
+        if (!found) {
+          book.shelf = shelf;
+          newState.push(book);
         }
-      }
-    )
+        return { books: newState };
+      }))
+      .catch(err => console.error('Error occurred moving book: ', err));
   }
 
-  render () {
+  searchBooks = (query, maxResults) => {
+    BooksAPI.search(query, maxResults || 15)
+      .then(searchedBooks => {
+        this.setState({ searchedBooks });
+      })
+      .catch(err => console.error('Error occurred searching books: ', err));
+  }
+
+  render() {
     return (
       <div className="app">
-        <p>Book Apps</p>
-        <Route path='/search' render={() => (
-          <SearchBook 
-            onMoveBook={this.onMoveBook} 
-            books={this.state.searchedBooks} 
-            onBookSearch={this.onBookSearch} 
-          />
+        <Route exact path="/" render={() => (
+          <div>
+            <div className="list-books-title">
+              <h1>MyReads</h1>
+            </div>
+            <ShelfList books={this.state.books} onChangeShelf={this.changeShelf} />
+            <div className="open-search">
+              <Link to="/search">Add a book</Link>
+            </div>
+          </div>
         )} />
-
-        <Route exact path='/' render={({ history }) => (
-          <BookList 
-            books={this.state.books} 
-            onMoveBook={this.onMoveBook}
-          />
-        )
-        }
-        />
-        <div className="open-search">
-          <Link className="" to="/search">
-            Search a book
-          </Link>
-        </div>
+        <Route path="/search" render={({ history }) => (
+          <SearchBook books={this.state.books} onChangeShelf={this.moveBook} />
+        )} />
       </div>
     )
   }
