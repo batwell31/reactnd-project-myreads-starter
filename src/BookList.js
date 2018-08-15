@@ -1,10 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import Book from "./Book";
 
 class BookList extends React.Component {
     render() {
-        let shelfNames = ["Currently Reading", "Want to Read", "Read", "None"];
+        let shelfName = ["Currently Reading", "Want to Read", "Read", "None"];
         let shelfTypes = ["currentlyReading", "wantToRead", "read", "none"];
 
         const shelf = shelfTypes.map(
@@ -12,7 +11,7 @@ class BookList extends React.Component {
                 let books = (this.props.books != undefined && this.props.books instanceof Array) && (this.props.books.filter((books) => books.shelf === x))
                 return (
                     <div key={x} className="book-shelf-detail">
-                        <p> Bookshelf Name : {shelfNames[i]}</p>
+                        <p> Bookshelf Name : {shelfName[i]}</p>
                         <ol className="books-grid">
                             {books != undefined && books.length !== 0 &&
                                 books.map((book, index) => {
