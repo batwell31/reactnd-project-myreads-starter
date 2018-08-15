@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, BrowserRouter } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { Link } from "react-router-dom";
 import * as BooksAPI from './BooksAPI'
 import BookList from './BookList'
@@ -26,7 +26,13 @@ class BooksApp extends React.Component {
     BooksAPI.update(book, target).then(
       result => {
         BooksAPI.getAll().then(
-          this.setState({ books: books })
+          books => {
+            this.setState({ books: books })
+
+            if (this.state.searchQuery.length !== 0) {
+              this.onMoveBook(this.state.searchQuery)
+            }
+          }
         )
       }
     )
