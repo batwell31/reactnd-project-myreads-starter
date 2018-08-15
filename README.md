@@ -24,7 +24,7 @@ $ npm install
 
 ## Launch
 
-* To launch this application, again use `npm`
+* To launch this application you will use `npm` again
 
 ```
 $ npm start
