@@ -1,5 +1,6 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import { Route, BrowserRouter } from 'react-router-dom'
+import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -8,6 +9,13 @@ class BooksApp extends React.Component {
     searchBooks: [],
     searchQuery: ''
   }
+
+  componentDidMount = () => {
+    BooksAPI.getAll()
+      .then((books) => {
+        this.setState({ books: books })
+      });
+  };
 
   render() {
     return (
