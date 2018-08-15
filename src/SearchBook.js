@@ -10,12 +10,19 @@ class SearchBook extends React.Component {
                     Close
                 </Link>
                 <div className="search-book-input">
-                    <input type="text" placeholder="Search books by title or author" />
+                    <input 
+                        type="text" 
+                        placeholder="Search books by title or author" 
+                        onChange={(event) => this.props.onBookSearch(event.target.value)} 
+                    />
                 </div>
             </div>
             <div className="search-book-result">
                 <ol className="books-grid">
-                    <BookList books={this.props.books} onMoveBook={this.props.onChangeShelf} />
+                    <BookList 
+                        books={this.props.books} 
+                        onMoveBook={this.props.onChangeShelf} 
+                    />
                 </ol>
             </div>
         </div>    
