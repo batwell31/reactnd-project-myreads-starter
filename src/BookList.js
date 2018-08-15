@@ -10,14 +10,14 @@ class BookList extends React.Component {
             (x, i) => {
                 let books = (this.props.books != undefined && this.props.books instanceof Array) && (this.props.books.filter((books) => books.shelf === x))
                 return (
-                    <div key={x} className="book-shelf-detail">
+                    <div key={x} className="bookshelf-details">
                         <p> Bookshelf Name : {shelfName[i]}</p>
                         <ol className="books-grid">
                             {books != undefined && books.length !== 0 &&
                                 books.map((book, index) => {
                                     return (
                                         <li key={index}>
-                                            <Book book={book} />
+                                            <Book book={book} onMoveBook={this.props.onChangeShelf} />
                                         </li>
                                     );
                                 })}

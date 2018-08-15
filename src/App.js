@@ -18,6 +18,18 @@ class BooksApp extends React.Component {
       });
   };
 
+  onMoveBook = (event, book) => {
+    const target = event.target.value;
+    
+    BooksAPI.update(book, target).then(
+      result => {
+        BooksAPI.getAll().then(
+          this.setState({ books: books })
+        )
+      }
+    )
+  }
+
   render() {
     return (
       <div className="app">

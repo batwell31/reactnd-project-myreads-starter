@@ -15,7 +15,7 @@ class SearchBook extends React.Component {
             </div>
             <div className="search-book-result">
                 <ol className="books-grid">
-                    <BookList books={this.props.books} />
+                    <BookList books={this.props.books} onMoveBook={this.props.onChangeShelf} />
                 </ol>
             </div>
         </div>    
